@@ -1,0 +1,220 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8"></meta>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"></meta>
+    <title>AI Weight Management Assistant</title>
+    <style>
+        :root {
+            --primary: #2A9D8F;
+            --secondary: #E76F51;
+            --background: #F8F9FA;
+            --text: #2D3436;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin: 10px;
+        }
+
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            margin: 15px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s;
+            width: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .results {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .input-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEie-uDCR8zHPCvN24m7N0g91nxSpQJeFG-uVm-NNQh-HkyYLTpd5GV6tXOZdG-BRgC4KP5gAgvdT8wDrQk8f9KpSL1YW8tbLXOr_Hg1rhgp6r5Yv0GsqUddz3HjAVpyiR7FsSfLhOGgpYzSvnX691sVsXF7D-7bVnI7gkEqOP4953xQeecBH_l-_9dE7_FI/s1280/Google_AI_Studio_2025-08-18T18_54_44.620Z.png" style="display: block; padding: 1em 0; text-align: center; "><img alt="" border="0" width="320" data-original-height="896" data-original-width="1280" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEie-uDCR8zHPCvN24m7N0g91nxSpQJeFG-uVm-NNQh-HkyYLTpd5GV6tXOZdG-BRgC4KP5gAgvdT8wDrQk8f9KpSL1YW8tbLXOr_Hg1rhgp6r5Yv0GsqUddz3HjAVpyiR7FsSfLhOGgpYzSvnX691sVsXF7D-7bVnI7gkEqOP4953xQeecBH_l-_9dE7_FI/s320/Google_AI_Studio_2025-08-18T18_54_44.620Z.png"/></a></div>
+<body>
+    <div class="container">
+        <h1>AI Weight Management Assistant</h1>
+        
+        <div class="input-group">
+            <input id="age" max="120" min="18" placeholder="Age" type="number" />
+            <select id="gender">
+                <option value="">Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+            <input id="height" max="250" min="100" placeholder="Height (cm)" type="number" />
+            <input id="weight" max="300" min="30" placeholder="Weight (kg)" type="number" />
+        </div>
+
+        <div class="input-group">
+            <select id="activity">
+                <option value="1.2">Sedentary</option>
+                <option value="1.375">Lightly Active</option>
+                <option value="1.55">Moderately Active</option>
+                <option value="1.725">Very Active</option>
+            </select>
+            <select id="diet">
+                <option value="non-veg">Non-vegetarian</option>
+                <option value="vegetarian">Vegetarian</option>
+                <option value="vegan">Vegan</option>
+            </select>
+        </div>
+
+        <button onclick="calculate()">Generate Plan</button>
+
+        <div class="results" id="results">
+            <h2>Your Results</h2>
+            <div id="bmiResult"></div>
+            <div id="mealPlan"></div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            // Get inputs
+            const age = document.getElementById('age').value;
+            const gender = document.getElementById('gender').value;
+            const height = document.getElementById('height').value;
+            const weight = document.getElementById('weight').value;
+            const activity = document.getElementById('activity').value;
+            const diet = document.getElementById('diet').value;
+
+            // Calculate BMI
+            const bmi = (weight / ((height/100)**2)).toFixed(1);
+            let category = '';
+            if(bmi < 18.5) category = 'Underweight';
+            else if(bmi < 25) category = 'Normal';
+            else if(bmi < 30) category = 'Overweight';
+            else category = 'Obese';
+
+            // Generate Meal Plan (Simplified)
+            const mealPlan = generateMealPlan(bmi, diet);
+
+            // Display Results
+            document.getElementById('bmiResult').innerHTML = `
+                <p><strong>BMI:</strong> ${bmi} (${category})</p>
+                <p><strong>Daily Calories:</strong> ${Math.round(calculateTDEE(weight, height, age, activity))}</p>
+            `;
+            
+            document.getElementById('mealPlan').innerHTML = mealPlan;
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function calculateTDEE(weight, height, age, activity) {
+            const bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
+            return bmr * activity;
+        }
+
+        function generateMealPlan(bmi, diet) {
+            // Simplified meal plan generation
+            const calories = Math.round(calculateTDEE(
+                document.getElementById('weight').value,
+                document.getElementById('height').value,
+                document.getElementById('age').value,
+                document.getElementById('activity').value
+            ) * 0.8);
+
+            return `
+                <h3>7-Day Meal Plan (${calories} kcal/day)</h3>
+                <table>
+                    <tr><th>Day</th><th>Breakfast</th><th>Lunch</th><th>Dinner</th></tr>
+                    <tr><td>Mon</td><td>2 eggs + oatmeal</td><td>Grilled chicken salad</td><td>Salmon + quinoa</td></tr>
+                    <tr><td>Tue</td><td>Greek yogurt + berries</td><td>Turkey wrap</td><td>Stir-fried tofu</td></tr>
+                    <tr><td>Wed</td><td>Avocado toast</td><td>Quinoa bowl</td><td>Lean beef steak</td></tr>
+                    <tr><td>Thu</td><td>Protein smoothie</td><td>Chickpea salad</td><td>Baked cod</td></tr>
+                    <tr><td>Fri</td><td>Scrambled eggs</td><td>Grilled shrimp</td><td>Vegetable curry</td></tr>
+                    <tr><td>Sat</td><td>Chia pudding</td><td>Chicken Caesar</td><td>Stuffed peppers</td></tr>
+                    <tr><td>Sun</td><td>Whole grain pancakes</td><td>Lentil soup</td><td>Baked chicken</td></tr>
+                </table>
+                <p><strong>Grocery List:</strong> Eggs, chicken, salmon, Greek yogurt, quinoa, spinach, berries, sweet potatoes</p>
+            `;
+        }
+    </script>
+  <div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgj_bA15Xu8hW2NgJYyL78WZsvbVOudJk0ROhxsrmO0v7dhsf_HGip6dPUYc46Y30V6p_TE9cDyRNjFSw_kvZdfv_NIoxPtd15A9tHAeaEnR1vhgNwkgVAriSV03TlO6cE_pV0XeM44jLHV1kuHPVv88FDu9_-8JP2JStQ29l0EkRKKPNc1IeQwiKHm96zt/s1280/Google_AI_Studio_2025-08-18T18_59_45.100Z.png" style="display: block; padding: 1em 0; text-align: center; "><img alt="" border="0" width="320" data-original-height="896" data-original-width="1280" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgj_bA15Xu8hW2NgJYyL78WZsvbVOudJk0ROhxsrmO0v7dhsf_HGip6dPUYc46Y30V6p_TE9cDyRNjFSw_kvZdfv_NIoxPtd15A9tHAeaEnR1vhgNwkgVAriSV03TlO6cE_pV0XeM44jLHV1kuHPVv88FDu9_-8JP2JStQ29l0EkRKKPNc1IeQwiKHm96zt/s320/Google_AI_Studio_2025-08-18T18_59_45.100Z.png"/></a></div>
+</body>
+</html>
